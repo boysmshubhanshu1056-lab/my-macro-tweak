@@ -1,5 +1,15 @@
 #import <UIKit/UIKit.h>
 
+// --- CRITICAL COMPILER DECLARATION FIX ---
+// This tells the compiler that our custom UI menu methods exist
+@interface UIViewController (MacroExtension)
+- (void)toggleMenuVisibility;
+- (void)handleUIDrag:(UIPanGestureRecognizer *)gesture;
+- (void)toggleMacroEngine:(UIButton *)sender;
+- (void)executeMacroLoopSteps;
+@end
+// ----------------------------------------
+
 static BOOL isClicking = NO;
 static NSTimer *clickTimer = nil;
 static BOOL alternateToggle = NO;
@@ -123,7 +133,6 @@ static UIButton *actionBtn = nil;
 
 %new
 - (void)toggleMenuVisibility {
-    // Collapses or opens the window frame smoothly
     [UIView animateWithDuration:0.2 animations:^{
         panelView.alpha = (panelView.alpha == 0.0) ? 1.0 : 0.0;
     }];
@@ -144,11 +153,11 @@ static UIButton *actionBtn = nil;
     isClicking = !isClicking;
     
     if (isClicking) {
-        [panelView endEditing:YES]; // Closes active text keyboard
+        [panelView endEditing:YES];
         
         [sender setTitle:@"STOP ENGINE" forState:UIControlStateNormal];
-        sender.backgroundColor = [UIColor colorWithRed:0.92 green:0.26 blue:0.26 alpha:1.0]; // Action button goes Red to mean "Stop"
-        statusLight.backgroundColor = [UIColor colorWithRed:0.18 green:0.80 blue:0.44 alpha:1.0]; // Status light turns Green (ON)
+        sender.backgroundColor = [UIColor colorWithRed:0.92 green:0.26 blue:0.26 alpha:1.0]; 
+        statusLight.backgroundColor = [UIColor colorWithRed:0.18 green:0.80 blue:0.44 alpha:1.0]; 
         
         clickTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 
                                                       target:self 
@@ -157,8 +166,8 @@ static UIButton *actionBtn = nil;
                                                      repeats:YES];
     } else {
         [sender setTitle:@"START ENGINE" forState:UIControlStateNormal];
-        sender.backgroundColor = [UIColor colorWithRed:0.20 green:0.20 blue:0.20 alpha:1.0]; // Back to neutral dark
-        statusLight.backgroundColor = [UIColor colorWithRed:0.92 green:0.26 blue:0.26 alpha:1.0]; // Status light turns Red (OFF)
+        sender.backgroundColor = [UIColor colorWithRed:0.20 green:0.20 blue:0.20 alpha:1.0]; 
+        statusLight.backgroundColor = [UIColor colorWithRed:0.92 green:0.26 blue:0.26 alpha:1.0]; 
         
         [clickTimer invalidate];
         clickTimer = nil;
