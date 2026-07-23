@@ -1,0 +1,26 @@
+name: Build Tweak
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Theos Compiler
+        uses: beerpiss/theos-action@v1
+
+      - name: Compile Library Binary
+        run: |
+          make package FINALPACKAGE=1
+
+      - name: Save Compiled Dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoClicker-Dylib
+          path: .theos/obj/MyAutoClicker.dylib
